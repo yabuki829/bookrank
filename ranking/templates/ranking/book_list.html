@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>本のランキング</title>
+</head>
+<body>
+    <h1>Youtubeで紹介された本のランキング</h1>
+    {% for book in books %}
+        <h2>{{ book.book_title }}</h2>
+        <p>Youtube: <a href="{{ book.youtube_url }}">{{ book.youtube_title }}</a></p>
+        <p>公開日時: {{ book.published_date }}</p>
+    {% endfor %}
+</body>
+</html>
