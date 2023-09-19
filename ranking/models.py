@@ -14,7 +14,7 @@ class Book(models.Model):
         return str(self.views) +" 件: " + self.title
 
 class Data(models.Model):
-    book = models.ForeignKey(Book,on_delete=models.CASCADE)
+    book = models.ForeignKey(Book,on_delete=models.CASCADE,related_name="data")
     # moviemodelみたいなのを作成するのもあり？　-> メリットあんまりなさそうやからしない
     # サイトのタイトル
     title = models.CharField(max_length=255)

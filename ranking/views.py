@@ -5,10 +5,13 @@ from .scraping import youtube,amazon
 import time
 
 def book_list(request):
-    youtube.getChannelAllVideo("UCaG7jufgiw4p5mphPPVbqhw")
+    # youtube.getChannelAllVideo("UCFo4kqllbcQ4nV83WCyraiw")
+    # print( amazon.scrape_amazon_title("https://www.amazon.co.jp/dp/B0BSN11J9Y"))
     # delete()
-    update_rank ()
-    return render(request, 'ranking/book_list.html')
+    # update_rank()
+    books = Book.objects.order_by("-views").all()
+
+    return render(request, 'ranking/book_list.html',{'books': books})
 
 
 
@@ -43,25 +46,21 @@ def delete():
         value.delete()
     print("削除完了")
         
-
-
-
-
-
-
+ 
 channels = [
         # 終了
     ["文学YouTuberベル", "UCL4QAojeGy6CJ9R2PwmlmJQ"],
     ["本解説のしもん塾", "UCIaQKvzS2QFoV9GWTXZ_YDQ"],
     ["アバタロー", "UCduDJ6s3mMchYMy2HvqalxQ"],
     ["OLめいの本要約チャンネル", "UCxnoA-FrO9AyDHM6ShgqRrg"],
-
+    ["サラタメさん【サラリーマンYouTuber】", "UCaG7jufgiw4p5mphPPVbqhw"],# 188
+        ["学識サロン", "UCC4NkFV-L-vVYD5z_Ei5dUA"],# 414
     
     # まだ
-     ["サラタメさん【サラリーマンYouTuber】", "UCaG7jufgiw4p5mphPPVbqhw"],# 188
+     
     
    
-     ["学識サロン", "UCC4NkFV-L-vVYD5z_Ei5dUA"],# 414
+     
     ["中田敦彦のYouTube大学", "UCFo4kqllbcQ4nV83WCyraiw"],# 950
     ["サムの本解説ch", "UCcdd3kS52T9Zyo-SWfj86bA"], #461
     ["【本要約チャンネル・名言】伝説JAPAN", "UCUK0A-x_9xrywwWXiGMHGHw"],# 94

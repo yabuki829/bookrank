@@ -5,11 +5,19 @@
     <title>本のランキング</title>
 </head>
 <body>
-    <h1>Youtubeで紹介された本のランキング</h1>
+    <h1>紹介された本のランキング for Youtube</h1>
     {% for book in books %}
-        <h2>{{ book.book_title }}</h2>
-        <p>Youtube: <a href="{{ book.youtube_url }}">{{ book.youtube_title }}</a></p>
-        <p>公開日時: {{ book.published_date }}</p>
+        <hr>
+        <h1>{{ forloop.counter }}位 <span>{{book.views}} 件：</span> <span>{{ book.title }}</span></h1>
+        <h2></h2>
+        <hr>
+        {% for data in book.data.all %}
+            <h2>タイトル: {{ data.title }}</h2>
+            <p>URL: <a href="{{ data.url }}">{{ data.url }}</a></p>
+            <p>公開日: {{ data.published_date }}</p>
+        {% endfor %}
+        {{book.id}}
+      
     {% endfor %}
 </body>
 </html>

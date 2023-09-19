@@ -110,15 +110,17 @@ def getVideoFromYoutube(youtube_video_ID):
 		print("登録済みです")
 		return 
 
-	for url in urls:
-			sleep(10)
-			book_title = scrape_amazon_title(url)
+	for i in range(len(urls)):
+			sleep(8)
+			# if i == 2 :
+			# 	break
+			book_title = scrape_amazon_title(urls[i])
 			if book_title == "NoSuchElementException":
 				# タイトルが見つからない場合本でない場合が多い
 				return	
 			if book_title == None:
 				# 目視でチェックする
-				Check.objects.create(youtube_title=video_title,amazon_url=url,youtube_url=video_url)
+				Check.objects.create(youtube_title=video_title,amazon_url=urls[i],youtube_url=video_url)
 				continue
 
 			books = Book.objects.filter(title=book_title)
@@ -134,7 +136,6 @@ def getVideoFromYoutube(youtube_video_ID):
 				url=video_url,
 				published_date=published_at
 			)
-			print(book_title)
 
 
 			
