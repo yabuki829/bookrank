@@ -1,15 +1,17 @@
 from django.shortcuts import render
 from .models import Book,Channel,Data
-from .scraping import youtube,amazon
+from .methods import youtube,amazon
 
 import time
 
+
 def book_list(request):
-    # youtube.getChannelAllVideo("UCFo4kqllbcQ4nV83WCyraiw")
-    # print( amazon.scrape_amazon_title("https://www.amazon.co.jp/dp/B0BSN11J9Y"))
-    # delete()
+    # youtube.getChannelAllVideo("UC9V4eJBNx_hOieGG51NZ6nA")
     # update_rank()
-    books = Book.objects.order_by("-views").all()
+    # get_all_book_isbn()
+
+
+    books = Book.objects.order_by("-views").all()[:20]
 
     return render(request, 'ranking/book_list.html',{'books': books})
 
@@ -24,6 +26,24 @@ def update_rank():
         num_data = Data.objects.filter(book=book).count()
         book.views = num_data
         book.save()
+
+
+def get_all_book_isbn():
+    books = Book.objects.order_by("-views").all()
+    for book in books:
+        if book.isbn != "None":
+            continue
+
+        if len(book.isbn) != 10 : 
+            isbn = amazon.scrape_isbn_for_amazon_A(book.title)
+
+            print(isbn)
+            if isbn != None:
+                book.isbn = isbn
+                book.save()
+    print("終了")
+        
+
 
 # 同じやつを削除する
 def delete():
@@ -48,21 +68,23 @@ def delete():
         
  
 channels = [
-        # 終了
+    # 終了
     ["文学YouTuberベル", "UCL4QAojeGy6CJ9R2PwmlmJQ"],
     ["本解説のしもん塾", "UCIaQKvzS2QFoV9GWTXZ_YDQ"],
     ["アバタロー", "UCduDJ6s3mMchYMy2HvqalxQ"],
     ["OLめいの本要約チャンネル", "UCxnoA-FrO9AyDHM6ShgqRrg"],
     ["サラタメさん【サラリーマンYouTuber】", "UCaG7jufgiw4p5mphPPVbqhw"],# 188
         ["学識サロン", "UCC4NkFV-L-vVYD5z_Ei5dUA"],# 414
+         ["中田敦彦のYouTube大学", "UCFo4kqllbcQ4nV83WCyraiw"],# 950
+         ["サムの本解説ch", "UCcdd3kS52T9Zyo-SWfj86bA"], #461
     
     # まだ
      
     
    
      
-    ["中田敦彦のYouTube大学", "UCFo4kqllbcQ4nV83WCyraiw"],# 950
-    ["サムの本解説ch", "UCcdd3kS52T9Zyo-SWfj86bA"], #461
+   
+    
     ["【本要約チャンネル・名言】伝説JAPAN", "UCUK0A-x_9xrywwWXiGMHGHw"],# 94
 
     ["本要約・書評の10分解説チャンネル", "UCp2xtXwztK9RvgmW8adtOZg"],# 85

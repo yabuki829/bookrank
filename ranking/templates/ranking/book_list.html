@@ -8,12 +8,16 @@
     <h1>紹介された本のランキング for Youtube</h1>
     {% for book in books %}
         <hr>
-        <h1>{{ forloop.counter }}位 <span>{{book.views}} 件：</span> <span>{{ book.title }}</span></h1>
+        <h1>{{ forloop.counter }}位 <span>{{book.views}} 件：</span> <span>{{ book.title }}{{book.isbn}}</span></h1>
         <h2></h2>
         <hr>
+
+        <img src="https://images-na.ssl-images-amazon.com/images/P/{{book.isbn}}.THUMBZZZ.jpg" alt="本の写真">
+
         {% for data in book.data.all %}
             <h2>タイトル: {{ data.title }}</h2>
             <p>URL: <a href="{{ data.url }}">{{ data.url }}</a></p>
+            
             <p>公開日: {{ data.published_date }}</p>
         {% endfor %}
         {{book.id}}

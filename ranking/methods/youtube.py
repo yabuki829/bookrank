@@ -3,7 +3,7 @@ from googleapiclient.discovery import build
 from time import sleep
 from ..models import Channel, Book,Check,Data
 from datetime import datetime
-from .amazon import find_amazon_url,scrape_amazon_title
+from .amazon import find_amazon_url,scrape_amazon_title_and_isbn
 def scrape_videos():
 		youtube = build('youtube', 'v3', developerKey='AIzaSyD7N6Ibv0QxqCejBvPNTqFT0JuwoLbHzig')
 		
@@ -111,10 +111,14 @@ def getVideoFromYoutube(youtube_video_ID):
 		return 
 
 	for i in range(len(urls)):
-			sleep(8)
+			
 			# if i == 2 :
 			# 	break
-			book_title = scrape_amazon_title(urls[i])
+			if urls[i] in ['https://amzn.to/2Utm3p8', 'https://amzn.to/2JznN7w', 'https://amzn.to/2RZf1od']:
+				continue
+			sleep(8)
+			book_title,isbn = scrape_amazon_title_and_isbn(urls[i])
+
 			if book_title == "NoSuchElementException":
 				# タイトルが見つからない場合本でない場合が多い
 				return	
@@ -126,9 +130,11 @@ def getVideoFromYoutube(youtube_video_ID):
 			books = Book.objects.filter(title=book_title)
 			# 本が登録されていなければ
 			if len(books) == 0:
-				book = Book.objects.create(title=book_title)
+				book = Book.objects.create(title=book_title,isbn=isbn)
 			else:
 				book = books[0]
+				if book.isbn == None:
+					book.isbn = isbn
 				
 			Data.objects.create(
 				book=book,
