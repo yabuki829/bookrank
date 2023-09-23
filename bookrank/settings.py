@@ -12,8 +12,16 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+import os
+import environ
+from decouple import config
+from dj_database_url import parse as dburl
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, ".env"))
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -38,10 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "ranking",
-    "api"
+    "api",
+    "corsheaders"
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -50,6 +60,32 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+default_dburl = "sqlite:///" + str(BASE_DIR / "db.sqlite3")
+
+DATABASES = {
+    "default": config("DATABASE_URL", default=default_dburl, cast=dburl),
+}
+
+STATIC_URL = "static/"
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SUPERUSER_NAME = env("SUPERUSER_NAME")
+SUPERUSER_EMAIL = env("SUPERUSER_EMAIL")
+SUPERUSER_PASSWORD = env("SUPERUSER_PASSWORD")
+
+
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "https://bookrank.netlify.app"
+]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
 
 ROOT_URLCONF = 'bookrank.urls'
 

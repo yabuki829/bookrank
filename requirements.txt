@@ -3,4 +3,13 @@ apscheduler
 google-api-python-client 
 beautifulsoup4
 selenium
-djangorestframework
+django-cors-headers~=3.4.0
+
+
+gunicorn
+psycopg2-binary
+whitenoise
+dj-database-url
+dj-static
+python-decouple
+django-environ

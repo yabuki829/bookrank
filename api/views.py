@@ -7,7 +7,7 @@ from ranking.models import Book
 class APIView(View):
     
     def get(self, request, *args, **kwargs):
-        books = Book.objects.order_by("-views").all()
+        books = Book.objects.order_by("-views").all()[:20]
 
         books_data = []
         for book in books:
@@ -20,6 +20,7 @@ class APIView(View):
             book_info = {
                 "title": book.title,
                 "views": book.views,
+                "isbn": book.isbn,
                 "data": data_list
             }
             books_data.append(book_info)
