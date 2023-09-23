@@ -3,9 +3,10 @@ from googleapiclient.discovery import build
 from time import sleep
 from ..models import Channel, Book,Check,Data
 from datetime import datetime
+from django.conf import settings
 from .amazon import find_amazon_url,scrape_amazon_title_and_isbn
 def scrape_videos():
-		youtube = build('youtube', 'v3', developerKey='AIzaSyD7N6Ibv0QxqCejBvPNTqFT0JuwoLbHzig')
+		youtube = build('youtube', 'v3', developerKey=settings.YOUTUBE_API_KEY)
 		
 		for channel in Channel.objects.all():
 				request = youtube.search().list(
