@@ -6,7 +6,7 @@ import time
 
 
 def book_list(request):
-    # youtube.getChannelAllVideo("UC9V4eJBNx_hOieGG51NZ6nA")
+    youtube.getChannelAllVideo("UC9V4eJBNx_hOieGG51NZ6nA")
     # update_rank()
     # get_all_book_isbn()
 
@@ -26,21 +26,24 @@ def update_rank():
         num_data = Data.objects.filter(book=book).count()
         book.views = num_data
         book.save()
+    print("終了")
 
 
 def get_all_book_isbn():
     books = Book.objects.order_by("-views").all()
-    for book in books:
-        if book.isbn != "None":
+    for i in range( len(books)):
+        print(i+1,"位",books[i].title)
+        if books[i].isbn != "None":
             continue
-
-        if len(book.isbn) != 10 : 
-            isbn = amazon.scrape_isbn_for_amazon_A(book.title)
+        
+        if not amazon.check_asin(books[i].isbn): 
+            
+            isbn = amazon.scrape_isbn_for_amazon_A(books[i].title)
 
             print(isbn)
             if isbn != None:
-                book.isbn = isbn
-                book.save()
+                books[i].isbn = isbn
+                books[i].save()
     print("終了")
         
 
@@ -74,22 +77,16 @@ channels = [
     ["アバタロー", "UCduDJ6s3mMchYMy2HvqalxQ"],
     ["OLめいの本要約チャンネル", "UCxnoA-FrO9AyDHM6ShgqRrg"],
     ["サラタメさん【サラリーマンYouTuber】", "UCaG7jufgiw4p5mphPPVbqhw"],# 188
-        ["学識サロン", "UCC4NkFV-L-vVYD5z_Ei5dUA"],# 414
-         ["中田敦彦のYouTube大学", "UCFo4kqllbcQ4nV83WCyraiw"],# 950
-         ["サムの本解説ch", "UCcdd3kS52T9Zyo-SWfj86bA"], #461
+    ["学識サロン", "UCC4NkFV-L-vVYD5z_Ei5dUA"],# 414
+    ["中田敦彦のYouTube大学", "UCFo4kqllbcQ4nV83WCyraiw"],# 950
+    ["サムの本解説ch", "UCcdd3kS52T9Zyo-SWfj86bA"], #461
     
     # まだ
-     
-    
-   
-     
-   
-    
+    ["フェルミ漫画大学", "UC9V4eJBNx_hOieGG51NZ6nA"], # 611
     ["【本要約チャンネル・名言】伝説JAPAN", "UCUK0A-x_9xrywwWXiGMHGHw"],# 94
-
     ["本要約・書評の10分解説チャンネル", "UCp2xtXwztK9RvgmW8adtOZg"],# 85
     ["書評王に俺はなる", "UCgj5xk3r8cBIBLGMoF9LX7A"],# 188
-    ["フェルミ漫画大学", "UC9V4eJBNx_hOieGG51NZ6nA"], # 611
+    
 
     ["Kaho Miyake", "UCrZ1UvZ5F1-2i1gll0hjjRg"],# 21
     ["ほんタメ", "UC0zArNuGZKdvzSkfHbR9yLA"], # 984 古い動画は取得しないから実際はもっと少なそう

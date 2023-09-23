@@ -8,7 +8,7 @@ class APIView(View):
     
     def get(self, request, *args, **kwargs):
         print("APIが呼び出されました")
-        books = Book.objects.order_by("-views").all()[:20]
+        books = Book.objects.order_by("-views").all()
 
         books_data = []
         for book in books:

@@ -43,7 +43,7 @@ def covertDate(date_string):
 	return output_string
 
 def getChannelAllVideo(channnel_id):
-		youtube = build('youtube', 'v3', developerKey="AIzaSyD7N6Ibv0QxqCejBvPNTqFT0JuwoLbHzig")
+		youtube = build('youtube', 'v3', developerKey=settings.YOUTUBE_API_KEY)
 		channel_response = youtube.channels().list(
 			part = 'contentDetails',
 			id = channnel_id

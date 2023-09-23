@@ -11,6 +11,7 @@ class Book(models.Model):
     title = models.CharField(max_length=255,unique=True)
     views = models.PositiveIntegerField(default=0)
     isbn = models.CharField(max_length=13,default="None")
+    # category = models.CharField(max_length=13,default="None")
     def __str__(self):
         return str(self.views) +" 件: " + self.title
 

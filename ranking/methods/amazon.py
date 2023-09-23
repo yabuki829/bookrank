@@ -148,7 +148,6 @@ def scrape_isbn_for_amazon_A(search_word):
     URLS = driver.find_elements(By.CSS_SELECTOR,"a.a-link-normal.s-no-outline")
     URL = URLS[0].get_attribute("href")
 
-    print(URL)   
     driver.get(URL)       
 
     
@@ -164,13 +163,14 @@ def scrape_isbn_for_amazon_A(search_word):
         if check_asin(element_li.find_all("span")[2].text.strip()) or check_isbn(element_li.find_all("span")[2].text.strip().replace("-", "")):
             isbn =  element_li.find_all("span")[2].text.strip().replace("-", "")
             driver.quit()
-            print("test",isbn)
             return isbn
     
     driver.quit()
 
     return None
 
+def is_alphanumeric_only(s):
+    return bool(re.match('^[a-zA-Z0-9]*$', s))
 
 # isbn-13だと画像が表示されないことが多い
 def check_isbn(word):
@@ -188,6 +188,8 @@ def check_asin(word):
     if len(word) != 10  :
         return False
 
+    if not is_alphanumeric_only(word) :
+        return False
     # アルファベット2つ以上含まれていること
     # isbn-10を通すためにコメントアウト
     # num_alpha = sum(c.isalpha() for c in word)
