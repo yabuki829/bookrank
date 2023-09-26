@@ -13,6 +13,7 @@ class APIView(View):
         books_data = []
         for book in books:
             data_items = book.data.all() 
+            books_count =  len(books)
             data_list = [{
                 "title": data.title,
                 "url": data.url,
@@ -24,6 +25,11 @@ class APIView(View):
                 "isbn": book.isbn,
                 "data": data_list
             }
-            books_data.append(book_info)
 
-        return JsonResponse(books_data, safe=False)
+            books_data.append(book_info)
+            response_data = {
+                "total_books": books_count, 
+                "books": books_data
+            }
+
+        return JsonResponse(response_data, safe=False)

@@ -18,17 +18,26 @@ def scrape_amazon_title_and_isbn(url):
     chrome_driver_path = os.path.join(current_path, 'chromedriver-mac-x64', 'chromedriver')
 
     try:
-        driver = webdriver.Chrome(executable_path=chrome_driver_path)
-        driver.get(url)
+        options = webdriver.ChromeOptions()
+        options.add_argument('--disable-blink-features=AutomationControlled') 
 
+        driver = webdriver.Chrome(executable_path=chrome_driver_path,options=options)
+        # driver = webdriver.Chrome(executable_path=chrome_driver_path)
+        driver.get(url)
+        time.sleep(random.random() * 4)           
+        # time.sleep(100)    
+        driver.execute_script('window.scrollTo(0, 1000);')
+        time.sleep(random.random() * 8)           
+        driver.execute_script('window.scrollTo(0, 0);')
+        time.sleep(random.random() * 8) 
         text = driver.page_source 
         soup = BeautifulSoup(text,"html.parser")
 
         asin = soup.find("ul", class_="a-unordered-list a-nostyle a-vertical a-spacing-none detail-bullet-list")
         print(asin)
         if asin == None :
-
            return [None,None]
+
         asin = asin.find("li").find_all("span")[2].text.strip() 
 
         for element_li in soup.find("ul", class_="a-unordered-list a-nostyle a-vertical a-spacing-none detail-bullet-list").find_all("li"):

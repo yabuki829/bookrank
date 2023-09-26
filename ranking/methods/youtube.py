@@ -3,7 +3,9 @@ from googleapiclient.discovery import build
 from time import sleep
 from ..models import Channel, Book,Check,Data
 from datetime import datetime
+
 from django.conf import settings
+
 from .amazon import find_amazon_url,scrape_amazon_title_and_isbn
 def scrape_videos():
 		youtube = build('youtube', 'v3', developerKey=settings.YOUTUBE_API_KEY)
@@ -98,9 +100,9 @@ def getVideoFromYoutube(youtube_video_ID):
 	# 動画の概要欄を取得する
 	description = snippetInfo["description"]
 	# 概要欄にamazonのurlを探す
-	print(video_title) 
+	
 	urls = find_amazon_url(description)
-	print(urls)
+	# print(urls)
 	if urls == None:
 		return 
 
@@ -108,16 +110,16 @@ def getVideoFromYoutube(youtube_video_ID):
 	data = Data.objects.filter(title=video_title,url=video_url)
 	# 登録済みであれば飛ばす
 	if len(data) != 0:
-		print("登録済みです")
-		return 
-
+		# print("登録済みです")
+		return 	
+	print(video_title) 
 	for i in range(len(urls)):
 			
 			# if i == 2 :
 			# 	break
-			if urls[i] in ['https://amzn.to/2Utm3p8', 'https://amzn.to/2JznN7w', 'https://amzn.to/2RZf1od']:
-				continue
-			sleep(8)
+			# if urls[i] in ['https://amzn.to/2Utm3p8', 'https://amzn.to/2JznN7w', 'https://amzn.to/2RZf1od']:
+			# 	continue
+			sleep(4)
 			book_title,isbn = scrape_amazon_title_and_isbn(urls[i])
 
 			if book_title == "NoSuchElementException":
