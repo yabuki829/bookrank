@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 def scrape_amazon_title_and_isbn(url):
     current_path = os.path.abspath(os.path.dirname(__file__))
     chrome_driver_path = os.path.join(current_path, 'chromedriver-mac-x64', 'chromedriver')
-
+    driver = None 
     try:
         options = webdriver.ChromeOptions()
         options.add_argument('--disable-blink-features=AutomationControlled') 
@@ -68,7 +68,8 @@ def scrape_amazon_title_and_isbn(url):
         print(f"WebDriver Error: {e}")
         return [None,None]
     finally:
-        driver.quit()
+        if driver:  # driverが初期化されている場合のみ終了する
+            driver.quit()
 
     return [title,isbn]
 

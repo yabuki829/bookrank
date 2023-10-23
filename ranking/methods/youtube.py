@@ -7,6 +7,7 @@ from datetime import datetime
 from django.conf import settings
 
 from .amazon import find_amazon_url,scrape_amazon_title_and_isbn
+
 def scrape_videos():
 		youtube = build('youtube', 'v3', developerKey=settings.YOUTUBE_API_KEY)
 		
@@ -143,7 +144,8 @@ def getVideoFromYoutube(youtube_video_ID):
 				book=book,
 				title=video_title,
 				url=video_url,
-				published_date=published_at
+				published_date=published_at,
+				channel =channel_id
 			)
 
 
@@ -195,6 +197,7 @@ def get_new_video_from_youtube(youtube_video_ID):
 
 	published_at = snippetInfo['publishedAt'][:10]
 	video_title = snippetInfo['title']
+	channel_id = snippetInfo['channelId']
 	print(video_title)
 	# 動画の概要欄を取得する
 	description = snippetInfo["description"]
@@ -231,18 +234,80 @@ def get_new_video_from_youtube(youtube_video_ID):
 				book = books[0]
 				if book.isbn == None:
 					book.isbn = isbn
-				
+			channel = Channel.objects.get(youtube_id =channel_id)
 			Data.objects.create(
 				book=book,
 				title=video_title,
 				url=video_url,
-				published_date=published_at
+				published_date=published_at,
+				channel=channel
 			)
 
  
 
 
 
+def check_channel(youtube_video_ID):
+	
+	youtube = build('youtube', 'v3', developerKey="AIzaSyD7N6Ibv0QxqCejBvPNTqFT0JuwoLbHzig")
+	videos_response = youtube.videos().list(
+			part='snippet,statistics',
+			
+			id='{},'.format(youtube_video_ID)
+	).execute()
+	snippetInfo = videos_response["items"][0]["snippet"]
+	# https://www.youtube.com/watch?v=-Rf1wE_mmNI ヒカキン
+	video_url = "https://www.youtube.com/watch?v="+youtube_video_ID
+
+	video_title = snippetInfo['title']
+	
+	channel_name = snippetInfo['channelTitle']
+	channel_id = snippetInfo['channelId']
+
+	
+	data = Data.objects.filter(title=video_title,url=video_url)
+
+	channel = Channel.objects.filter(name=channel_name,youtube_id=channel_id)
+	if len(data) == 0:
+		return
+
+	if len(channel) == 0:
+		return 
+	
+	data[0].channel = channel[0]
+	data[0].save()
+
+
+def get_channel_id_of_video(channnel_id):
+	youtube = build('youtube', 'v3', developerKey=settings.YOUTUBE_API_KEY)
+	channel_response = youtube.channels().list(
+			part = 'contentDetails',
+			id = channnel_id
+
+	).execute()
+	print("channel_response",channel_response)
+	playlist_id = channel_response["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+	print("playlist_id",playlist_id)
+	# playlist_idから全ての動画を取得する
+	video_id_list = []
+		# published_date = covertDate("2023/05/27")
+		# print(published_date)
+	request = youtube.playlistItems().list(
+				part="snippet",
+				maxResults=50,
+				playlistId=playlist_id,
+				fields="nextPageToken,items/snippet/resourceId/videoId",
+				# publishedAfter=published_date
+		)
+
+	while request:
+				response = request.execute()
+				video_id_list.extend(list(map(lambda item: item["snippet"]["resourceId"]["videoId"], response["items"])))
+				request = youtube.playlistItems().list_next(request, response)
+
+	for i in range(len(video_id_list)):
+			print("----",i+1,"本目の動画-----")
+			check_channel(video_id_list[i])
 	
 
 

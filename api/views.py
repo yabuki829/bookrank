@@ -8,12 +8,13 @@ class APIView(View):
     
     def get(self, request, *args, **kwargs):
         print("APIが呼び出されました")
-        books = Book.objects.order_by("-views").all()
+        # books = Book.objects.order_by("-views").all()
+        books = Book.objects.order_by("-views").prefetch_related('data').all()
 
         books_data = []
         for book in books:
             data_items = book.data.all() 
-            books_count =  len(books)
+            
             data_list = [{
                 "title": data.title,
                 "url": data.url,
@@ -21,6 +22,7 @@ class APIView(View):
 
             book_info = {
                 "title": book.title,
+                # pointに変更する
                 "views": book.views,
                 "isbn": book.isbn,
                 "data": data_list
@@ -28,7 +30,8 @@ class APIView(View):
 
             books_data.append(book_info)
             response_data = {
-                "total_books": books_count, 
+                # books_countに変更する
+                "total_books": len(books_data), 
                 "books": books_data
             }
 

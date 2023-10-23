@@ -12,7 +12,7 @@ def book_list(request):
     # get_all_book_isbn()
 
 
-    books = Book.objects.order_by("-views").all()[:1]
+    books = Book.objects.order_by("-views").all()[:10]
 
     return render(request, 'ranking/book_list.html',{'books': books})
 
@@ -24,8 +24,21 @@ def update_rank():
     Book.objects.update(views=0)
 
     for book in Book.objects.all():
-        num_data = Data.objects.filter(book=book).count()
-        book.views = num_data
+        num_data = Data.objects.filter(book=book)
+        point = 0
+        # 
+        channels = []
+        for data in num_data:
+            data.channel
+            if not data.channel in channels:
+                point += 10
+                channels.append(data.channel)
+            else:
+                point += 1
+
+        book.views = point
+
+        
         book.save()
     print("終了")
 
@@ -49,6 +62,12 @@ def get_all_book_isbn():
         
 
 
+
+def check_channel_on_data():
+    youtube.get_channel_id_of_video("UCxnoA-FrO9AyDHM6ShgqRrg")
+    # for channel in Channel.objects.all():
+    #     print(channel.name)
+        
 
 
 # 毎日実行するやつ
@@ -95,6 +114,7 @@ channels = [
     ["ほんタメ", "UC0zArNuGZKdvzSkfHbR9yLA"], # 984 古い動画は取得しないから実際はもっと少なそう
     ["本要約・書評の10分解説チャンネル", "UCp2xtXwztK9RvgmW8adtOZg"],# 85
     ["書評王に俺はなる", "UCgj5xk3r8cBIBLGMoF9LX7A"],# 188
+     ["Kaho Miyake", "UCrZ1UvZ5F1-2i1gll0hjjRg"],# 21
     # まだ 
 
     
@@ -102,7 +122,7 @@ channels = [
    
     
 
-    ["Kaho Miyake", "UCrZ1UvZ5F1-2i1gll0hjjRg"],# 21
+   
     
 
     ["梨ちゃんねる　文学系YouTuber", "UCwaQfJf70EbMhTfTc5kASYQ"],# 76
@@ -113,8 +133,7 @@ channels = [
     ["ちっこいピエロの本棚", "UCS9wlXLeVxTqXgPWU3kn7EQ"], # 164
     ["美女読書【ビジネス書の要約】", "UCqJm2FkNSBR0EuxR9mNYgBA"], #157
     ["文学系チャンネル【スケザネ図書館】", "UCLqjn__t2ORA0Yehvs1WzjA"],# 115
-    # Kindleのurl がある　
-   ["クロマッキー大学", "UCTp9YSJ-eDvZjEC5sC3kBHw"],# 300
+
     ]
 
 

@@ -17,12 +17,12 @@ class Book(models.Model):
 
 class Data(models.Model):
     book = models.ForeignKey(Book,on_delete=models.CASCADE,related_name="data")
-    # moviemodelみたいなのを作成するのもあり？　-> メリットあんまりなさそうやからしない
     # サイトのタイトル
     title = models.CharField(max_length=255)
     # サイトのurl
     url = models.URLField()
     published_date = models.DateField()
+    channel = models.ForeignKey(Channel,on_delete=models.CASCADE,related_name="channel",default=1)
 
 
     def __str__(self):
